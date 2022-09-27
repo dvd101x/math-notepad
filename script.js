@@ -3,19 +3,23 @@ const wait = 300;
 const example = [
   "# # Quadratic Formula",
   "# ",
-"# In algebra, a quadratic equation is any equation that can be rearranged in standard form as",
-"# ",
-"# $$ ax^{2}+bx+c=0 $$",
-"# ",
-"# ",
-"# The quadratic formula is",
-"# ",
-`# $$ x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac}}}{2a}} $$`,
-"",
-"a = 1;",
-"b = 5;",
-"c = 3;",
-"x = -b + [sqrt(b^2-4 a c),-sqrt(b^2-4 a c)] / (2 a)"
+  "# In algebra, a quadratic equation is any equation that can be rearranged in standard form as",
+  "# ",
+  "# $$ ax^{2}+bx+c=0 $$",
+  "# ",
+  "# ",
+  "# The quadratic formula is",
+  "# ",
+  "# $$ x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac}}}{2a}} $$",
+  "",
+  "a = 1;",
+  "b = 5;",
+  "c = 3;",
+  "x = (-b + [1,-1] sqrt(b^2-4 a c)) / (2 a)",
+  "",
+  "# ## Proof",
+  "",
+  "a x.^2 + b x + c"
 ]
 
 const intro = example.join('\n');
