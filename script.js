@@ -64,7 +64,7 @@ function makeDoc(code) {
   splitCode
     .forEach((line, lineNum) => {
       if (lastType === lineTypes[lineNum]) {
-        cells[cells.length - 1].soure.push(line)
+        cells[cells.length - 1].source.push(line)
       }
       else {
         cells.push({ cell_type: lineTypes[lineNum], source: [line] })
