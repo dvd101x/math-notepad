@@ -12,13 +12,18 @@ body {
 }
 
 #input {
-  flex: 2;
+  flex: 1;
   background-color: hsl(240, 6.25%, 9.375%);
 }
 
+.markdown-body {
+		box-sizing: border-box;
+		margin: 0 auto;
+    overflow: hidden;
+	}
+
 #output {
   flex: 1;
-  background-color: hsl(240, 6.25%, 12.5%);
 }
 
 #help {
@@ -44,3 +49,10 @@ code {
 .hljs-class {
   font-weight: bold;
 }
+
+.markdown-body {
+		box-sizing: border-box;
+		margin: 0 auto;
+		padding: 1em;
+    overflow: scroll;
+	}

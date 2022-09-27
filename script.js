@@ -1,76 +1,99 @@
-const wait = 100;
+const wait = 300;
 
-const intro = '# intro';
+const example = [
+  "# # Quadratic Formula",
+  "# ",
+"# In algebra, a quadratic equation is any equation that can be rearranged in standard form as",
+"# ",
+"# $$ ax^{2}+bx+c=0 $$",
+"# ",
+"# ",
+"# The quadratic formula is",
+"# ",
+`# $$ x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac}}}{2a}} $$`,
+"",
+"a = 1;",
+"b = 5;",
+"c = 3;",
+"x = -b + [sqrt(b^2-4 a c),-sqrt(b^2-4 a c)] / (2 a)"
+]
 
-const intro_doc = {
-  description: 'You can type math.js expressions and see the result.',
-  examples: [
-    '2 + 2',
-    'round(e, 3)',
-    'log(100000, 10)',
-    '10cm to inch',
-    'sin(90 deg)',
-    'det([-1, 2; 3, 1])',
-    '1 kg * 1 m / s^2',
-    'help("round")',
-  ]
+const intro = example.join('\n');
+
+const parser = math.parser()
+
+function math2str(x) {
+    return typeof x == "string" ? x : math.format(x, 14)
 }
 
-function showDoc(doc) {
-  if (!doc) {
-    help.style.display = 'none';
-    return;
+function evalBlock(block) {
+    let mathResult
+    try {
+        mathResult = parser.evaluate(block)
+    } catch (error) {
+        return error.toString()
+    }
+    if (typeof mathResult != 'undefined') {
+        if (mathResult.entries) {
+            return mathResult.entries
+                .filter(x => typeof x != 'undefined')
+                .map(x => math2str(x)).join("\n")
+        }
+        else {
+            return math2str(mathResult)
+        }
+    }
+}
+
+const md = markdownit({html:true})
+  .use(texmath, {engine: katex,
+                delimiters: ['dollars','beg_end'],
+                katexOptions: {macros:{"\\RR": "\\mathbb{R}"}}
+                })
+
+function makeDoc(code){
+  const splitCode = code.split('\n');
+  const lineTypes = splitCode.map(line=>line.startsWith('# ') ? 'md':'math');
+  let blocks = [];
+  let lastType = '';
+  splitCode
+    .forEach((line, lineNum)=>{
+      if(lastType === lineTypes[lineNum]){
+        blocks[blocks.length-1].code.push(line)
+      }
+      else{
+        blocks.push({type:lineTypes[lineNum], code:[line]})
+      }
+      lastType = lineTypes[lineNum]
+    })
+  let cleanBlocks = []
+  blocks.forEach(x=>{
+    if(x.type === 'md'){
+      cleanBlocks.push({type:'md', code: x.code.map(e=>e.slice(2))})
+    }
+    else{
+      let notEmptyMath = x.code.filter(e => e)
+      if(notEmptyMath.length){
+        cleanBlocks.push({type:'math', code: notEmptyMath})
+      }
+    }
+  })
+  
+  let output = [];
+  
+  const processOutput = {
+    math: mathBlock => '<pre>'+evalBlock(mathBlock.join('\n'))+'</pre>',
+    md: markdown => md.render(markdown.join('\n'))
   }
-
-  function hideEmpty(elem, value) {
-    elem.style.display = value ? 'block' : 'none';
-  }
-
-  help_name.textContent = doc.name;
-  help_description.textContent = doc.description;
-
-  help_syntax_code.textContent = doc.syntax?.join("\n");
-  hljs.highlightElement(help_syntax_code);
-  hideEmpty(help_syntax, doc.syntax);
-
-  help_examples_code.textContent = doc.examples?.join("\n");
-  hljs.highlightElement(help_examples_code);
-  hideEmpty(help_examples, doc.examples);
-
-  help_seealso_text.textContent = doc.seealso?.join(", ");
-  hideEmpty(help_seealso, doc.seealso);
-
-  help.style.display = 'block';
+  
+  cleanBlocks.forEach(
+    block => output.push(processOutput[block.type](block.code))
+  )
+  return output.join('\n')
 }
 
 function doMath(input) {
-  let output = [];
-  let scope = {};
-  let doc;
-
-  for (const line of input.split('\n')) {
-    let output_line = '';
-    if (line) {
-      if (line.startsWith('#')) {
-        if (line == '# intro') doc = intro_doc;
-        output_line = '#';
-      } else {
-        try {
-          const r = math.evaluate(line, scope);
-          if (r) {
-            if (r.doc) doc = r.doc;
-            else output_line = math.format(r, 14);
-          }
-        } catch(e) {
-          output_line = e.toString();
-        }
-      }
-    }
-    output.push(output_line);
-  }
-
-  results.updateCode(output.join('\n'));
-  showDoc(doc);
+  document.getElementById('output').innerHTML = makeDoc(input)
 }
 
 function dropHandler(ev) {
