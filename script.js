@@ -27,71 +27,72 @@ const intro = example.join('\n');
 const parser = math.parser()
 
 function math2str(x) {
-    return typeof x == "string" ? x : math.format(x, 14)
+  return typeof x == "string" ? x : math.format(x, 14)
 }
 
-function evalBlock(block) {
-    let mathResult
-    try {
-        mathResult = parser.evaluate(block)
-    } catch (error) {
-        return error.toString()
+function evalCell(cell) {
+  let mathResult
+  try {
+    mathResult = parser.evaluate(cell)
+  } catch (error) {
+    return error.toString()
+  }
+  if (typeof mathResult != 'undefined') {
+    if (mathResult.entries) {
+      return mathResult.entries
+        .filter(x => typeof x != 'undefined')
+        .map(x => math2str(x)).join("\n")
     }
-    if (typeof mathResult != 'undefined') {
-        if (mathResult.entries) {
-            return mathResult.entries
-                .filter(x => typeof x != 'undefined')
-                .map(x => math2str(x)).join("\n")
-        }
-        else {
-            return math2str(mathResult)
-        }
+    else {
+      return math2str(mathResult)
     }
+  }
 }
 
-const md = markdownit({html:true})
-  .use(texmath, {engine: katex,
-                delimiters: ['dollars','beg_end'],
-                katexOptions: {macros:{"\\RR": "\\mathbb{R}"}}
-                })
+const md = markdownit({ html: true })
+  .use(texmath, {
+    engine: katex,
+    delimiters: ['dollars', 'beg_end'],
+    katexOptions: { macros: { "\\RR": "\\mathbb{R}" } }
+  })
 
-function makeDoc(code){
+function makeDoc(code) {
   const splitCode = code.split('\n');
-  const lineTypes = splitCode.map(line=>line.startsWith('# ') ? 'md':'math');
-  let blocks = [];
+  const lineTypes = splitCode.map(line => line.startsWith('# ') ? 'md' : 'math');
+  let cells = [];
   let lastType = '';
   splitCode
-    .forEach((line, lineNum)=>{
-      if(lastType === lineTypes[lineNum]){
-        blocks[blocks.length-1].code.push(line)
+    .forEach((line, lineNum) => {
+      if (lastType === lineTypes[lineNum]) {
+        cells[cells.length - 1].soure.push(line)
       }
-      else{
-        blocks.push({type:lineTypes[lineNum], code:[line]})
+      else {
+        cells.push({ cell_type: lineTypes[lineNum], source: [line] })
       }
       lastType = lineTypes[lineNum]
     })
-  let cleanBlocks = []
-  blocks.forEach(x=>{
-    if(x.type === 'md'){
-      cleanBlocks.push({type:'md', code: x.code.map(e=>e.slice(2))})
+  let cleanCells = []
+  cells.forEach(x => {
+    if (x.cell_type === 'md') {
+      cleanCells.push({ cell_type: 'md', source: x.source.map(e => e.slice(2)) })
     }
-    else{
-      let notEmptyMath = x.code.filter(e => e)
-      if(notEmptyMath.length){
-        cleanBlocks.push({type:'math', code: notEmptyMath})
+    else {
+      let notEmptyMath = x.source.filter(e => e)
+      if (notEmptyMath.length) {
+        cleanCells.push({ cell_type: 'math', source: notEmptyMath })
       }
     }
   })
-  
+
   let output = [];
-  
+
   const processOutput = {
-    math: mathBlock => '<pre>'+evalBlock(mathBlock.join('\n'))+'</pre>',
+    math: mathCell => '<pre>' + evalCell(mathCell.join('\n')) + '</pre>',
     md: markdown => md.render(markdown.join('\n'))
   }
-  
-  cleanBlocks.forEach(
-    block => output.push(processOutput[block.type](block.code))
+
+  cleanCells.forEach(
+    cell => output.push(processOutput[cell.cell_type](cell.source))
   )
   return output.join('\n')
 }
