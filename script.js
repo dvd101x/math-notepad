@@ -86,7 +86,10 @@ function makeDoc(code) {
   let output = [];
 
   const processOutput = {
-    math: mathCell => '<pre>' + evalCell(mathCell.join('\n')) + '</pre>',
+    math: mathCell => {
+      let result = evalCell(mathCell.join('\n'))
+      return result.length ? '<pre>' + result + '</pre>' : ''
+    },
     md: markdown => md.render(markdown.join('\n'))
   }
 
