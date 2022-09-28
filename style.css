@@ -16,21 +16,10 @@ body {
   background-color: hsl(240, 6.25%, 9.375%);
 }
 
-.markdown-body {
-		box-sizing: border-box;
-		margin: 0 auto;
-    overflow: hidden;
-	}
-
 #output {
   flex: 1;
-}
-
-#help {
-  font-family: sans-serif;
-  background-color: hsl(240, 6.25%, 93.75%);
-  flex: 1;
-  padding: 8px;
+  overflow: auto;
+  padding: 1em;
 }
 
 h1, h2 {
@@ -49,10 +38,3 @@ code {
 .hljs-class {
   font-weight: bold;
 }
-
-.markdown-body {
-		box-sizing: border-box;
-		margin: 0 auto;
-		padding: 1em;
-    overflow: scroll;
-	}
