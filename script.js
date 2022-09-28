@@ -14,11 +14,15 @@ const example = [
   "a = 1;",
   "b = 5;",
   "c = 3;",
-  "x = (-b + [1,-1] sqrt(b^2-4 a c)) / (2 a)",
+  "x = (-b + [1,-1] sqrt(b^2-4 a c)) / (2 a);",
+  "print('With a = $a, b=$b, and c=$c', {a:a, b:b, c:c})",
+  "print('x has two solutions $0 and $1', x, 4) ",
   "",
   "# ## Proof",
   "",
-  "a x.^2 + b x + c"
+  "proof = a x.^2 + b x + c;",
+  "print('Using x = $0 we get $1', [x[1], proof[1]], 4)",
+  "print('Using x = $0 we get $1', [x[2], proof[2]], 4)",
 ]
 
 const intro = example.join('\n');
