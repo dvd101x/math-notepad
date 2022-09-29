@@ -34,6 +34,7 @@ function math2str(x) {
 }
 
 function evalCell(cell) {
+  parser.clear()
   let mathResult
   try {
     mathResult = parser.evaluate(cell)
