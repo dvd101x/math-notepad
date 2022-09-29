@@ -34,7 +34,6 @@ function math2str(x) {
 }
 
 function evalCell(cell) {
-  parser.clear()
   let mathResult
   try {
     mathResult = parser.evaluate(cell)
@@ -65,6 +64,7 @@ function makeDoc(code) {
   const lineTypes = splitCode.map(line => line.startsWith('# ') ? 'md' : 'math');
   let cells = [];
   let lastType = '';
+  parser.clear()
   splitCode
     .forEach((line, lineNum) => {
       if (lastType === lineTypes[lineNum]) {
