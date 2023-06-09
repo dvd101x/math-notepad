@@ -40,7 +40,17 @@ function mathjs(hljs) {
     begin: /[\[\],;]/,
   };
 
-  const FUNCTION_LIST = Object.getOwnPropertyNames(math).filter(e => typeof math[e] === 'function');
+  const FUNCTION_LIST = Object.getOwnPropertyNames(math)
+    .filter(e => typeof math[e] === "function")
+    .filter(
+      e => {
+        try {
+          return typeof math.evaluate(e) === "function" ? true : false
+        } catch {
+          return false
+        }
+      }
+    );
 
   const FUNCTIONS = {
     scope: 'title',
