@@ -2,24 +2,24 @@
 
 <meta charset="utf-8">
 <title>Notepad</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6/build/styles/felipec.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/felipec.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/github-markdown-css/2.2.1/github-markdown.css"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it-texmath/texmath.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it-texmath/texmath.min.js"></script>
 
 
 <div id="input" class="editor language-mathjs" ondrop="dropHandler(event)"></div>
 <div id="output" class="markdown-body"></div>
 
-<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6/build/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
 <script type="module">
   import { CodeJar } from 'https://medv.io/codejar/codejar.js';
   window.editor = CodeJar(input, hljs.highlightElement);
 </script>
-<script src="https://cdn.jsdelivr.net/npm/mathjs@11.0/lib/browser/math.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.9.1/lib/browser/math.min.js"></script>
 <script src="hljs/mathjs.js"></script>
 <script src="script.js" defer></script>

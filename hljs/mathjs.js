@@ -22,35 +22,64 @@ function mathjs(hljs) {
     begin: keywords(['true', 'false', 'end']),
   };
 
-  const UNIT_LIST = Object.keys(math.Unit.UNITS).sort((a, b) => b.length - a.length);
+  const UNIT_LIST = Object.keys(math.Unit.UNITS)
+  const PREFIXED_UNIT_LIST = UNIT_LIST
 
-  const PREFIXED_UNIT_LIST = UNIT_LIST.map(e => {
-      const prefixes = Object.keys(math.Unit.UNITS[e].prefixes).filter(e => e);
-      const prefix_re = prefixes.length ? either(prefixes) + '?' : '';
-      return prefix_re + e;
-  });
+  for (const prefixType in math.Unit.PREFIXES) {
+    for (const prefix in math.Unit.PREFIXES[prefixType]) {
+      for (const baseUnit of UNIT_LIST) {
+        const unit = prefix + baseUnit
+        if (!UNIT_LIST.includes(unit) && math.Unit.isValuelessUnit(unit)) {
+          PREFIXED_UNIT_LIST.push(unit)
+        }
+      }
+    }
+  }
 
   const UNITS = {
     scope: 'class',
     begin: keywords(PREFIXED_UNIT_LIST),
   };
 
+  // taken from https://mathjs.org/docs/datatypes/units.html#physical-constants
+  const PYSICAL_CONSTANTS = {
+    scope: 'class',
+    begin: keywords(
+
+      [
+        // Universal constants
+        'speedOfLight', 'gravitationConstant', 'planckConstant', 'reducedPlanckConstant',
+
+        // Electromagnetic constants
+        'magneticConstant', 'electricConstant', 'vacuumImpedance', 'coulomb', 'elementaryCharge', 'bohrMagneton',
+        'conductanceQuantum', 'inverseConductanceQuantum', 'magneticFluxQuantum', 'nuclearMagneton', 'klitzing',
+
+        //Atomic and nuclear constants
+        'bohrRadius', 'classicalElectronRadius', 'electronMass', 'fermiCoupling', 'fineStructure', 'hartreeEnergy',
+        'protonMass', 'deuteronMass', 'neutronMass', 'quantumOfCirculation', 'rydberg', 'thomsonCrossSection',
+        'weakMixingAngle', 'efimovFactor',
+
+        //Physico-chemical constants
+        'atomicMass', 'avogadro', 'boltzmann', 'faraday', 'firstRadiation', 'loschmidt', 'gasConstant',
+        'molarPlanckConstant', 'molarVolume', 'sackurTetrode', 'secondRadiation', 'stefanBoltzmann',
+        'wienDisplacement',
+
+        //Adopted Values
+        'molarMass', 'molarMassC12', 'gravity', 'atm',
+
+        //Natural Units
+        'planckLength', 'planckMass', 'planckTime', 'planckCharge', 'planckTemperature'
+      ]
+    ),
+  }
+
   const MATRIX = {
     scope: 'bullet',
     begin: /[\[\],;]/,
   };
 
-  const FUNCTION_LIST = Object.getOwnPropertyNames(math)
-    .filter(e => typeof math[e] === "function")
-    .filter(
-      e => {
-        try {
-          return typeof math.evaluate(e) === "function" ? true : false
-        } catch {
-          return false
-        }
-      }
-    );
+  const FUNCTION_LIST = Object.keys(math.expression.mathWithTransform)
+    .filter(mathFunction => !['expr', 'type'].includes(mathFunction));
 
   const FUNCTIONS = {
     scope: 'title',
@@ -71,6 +100,7 @@ function mathjs(hljs) {
       OPERATORS,
       OPERATOR_KEYWORDS,
       UNITS,
+      PYSICAL_CONSTANTS,
       MATRIX,
       FUNCTIONS,
       VARIABLE,
