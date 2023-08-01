@@ -30,9 +30,6 @@ function mathjs(hljs) {
     }
   }
 
-  // remove duplicates
-  let units = wordRegexp(Array.from(new Set(PREFIXED_UNIT_LIST)))
-
   const UNITS = {
     scope: 'class',
     begin: keywords(Array.from(new Set(PREFIXED_UNIT_LIST))),
