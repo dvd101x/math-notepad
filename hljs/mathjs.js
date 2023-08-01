@@ -22,23 +22,20 @@ function mathjs(hljs) {
     begin: keywords(['true', 'false', 'end']),
   };
 
-  const UNIT_LIST = Object.keys(math.Unit.UNITS)
-  const PREFIXED_UNIT_LIST = UNIT_LIST
-
-  for (const prefixType in math.Unit.PREFIXES) {
-    for (const prefix in math.Unit.PREFIXES[prefixType]) {
-      for (const baseUnit of UNIT_LIST) {
-        const unit = prefix + baseUnit
-        if (!UNIT_LIST.includes(unit) && math.Unit.isValuelessUnit(unit)) {
-          PREFIXED_UNIT_LIST.push(unit)
-        }
-      }
+  // generates a list of all valid units in mathjs
+  const PREFIXED_UNIT_LIST = []
+  for (const unit in math.Unit.UNITS) {
+    for (const prefix in math.Unit.UNITS[unit].prefixes) {
+      PREFIXED_UNIT_LIST.push(prefix + unit)
     }
   }
 
+  // remove duplicates
+  let units = wordRegexp(Array.from(new Set(PREFIXED_UNIT_LIST)))
+
   const UNITS = {
     scope: 'class',
-    begin: keywords(PREFIXED_UNIT_LIST),
+    begin: keywords(Array.from(new Set(PREFIXED_UNIT_LIST))),
   };
 
   // taken from https://mathjs.org/docs/datatypes/units.html#physical-constants
